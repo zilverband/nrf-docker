@@ -1,7 +1,7 @@
 FROM ubuntu:22.04 as base
 WORKDIR /workdir
 
-ARG sdk_nrf_branch=v2.5-branch
+ARG sdk_manifest_rev=v2.5.0
 ARG toolchain_version=v2.5.0
 ARG sdk_nrf_commit
 ARG NORDIC_COMMAND_LINE_TOOLS_VERSION="10-24-0/nrf-command-line-tools-10.24.0"
@@ -41,7 +41,7 @@ EOT
 # ClangFormat
 #
 RUN <<EOT
-    wget -qO- https://raw.githubusercontent.com/nrfconnect/sdk-nrf/${sdk_nrf_branch}/.clang-format > /workdir/.clang-format
+    wget -qO- https://raw.githubusercontent.com/nrfconnect/sdk-nrf/${sdk_manifest_rev}/.clang-format > /workdir/.clang-format
 EOT
 
 # Nordic command line tools
@@ -78,7 +78,7 @@ EOT
 # Prepare image with a ready to use build environment
 SHELL ["nrfutil","toolchain-manager","launch","/bin/bash","--","-c"]
 RUN <<EOT
-    west init -m https://github.com/nrfconnect/sdk-nrf --mr ${sdk_nrf_branch} .
+    west init -m https://github.com/nrfconnect/sdk-nrf --mr ${sdk_manifest_rev} .
     if [[ $sdk_nrf_commit =~ "^[a-fA-F0-9]{32}$" ]]; then
         git checkout ${sdk_nrf_commit};
     fi
